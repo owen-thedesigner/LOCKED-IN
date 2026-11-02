@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101311">
+  <title>LOCK IN — Your space to make progress</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="refinements.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" data-page="home">
+        <span class="brand-mark"><span></span><span></span><span></span></span>
+        <span>LOCK<span class="brand-light">IN</span><small>MAKE YOUR DAYS COUNT</small></span>
+      </a>
+
+      <div class="side-label">WORKSPACE</div>
+      <nav class="nav-list" aria-label="Main navigation">
+        <button class="nav-link active" data-page="home"><span class="nav-icon">⌂</span>Overview</button>
+        <button class="nav-link" data-page="habits"><span class="nav-icon">◷</span>Habits</button>
+        <button class="nav-link" data-page="training"><span class="nav-icon">↗</span>Training</button>
+        <button class="nav-link" data-page="focus"><span class="nav-icon">◉</span>Focus</button>
+        <button class="nav-link" data-page="coach"><span class="nav-icon">✳</span>AI Coach <span class="tiny-dot"></span></button>
+      </nav>
+
+      <div class="side-label side-label-lower">YOUR SPACE</div>
+      <nav class="nav-list">
+        <button class="nav-link" data-page="nutrition"><span class="nav-icon">◇</span>Nutrition</button>
+        <button class="nav-link" data-page="community"><span class="nav-icon">♧</span>Community</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="profile-mini">
+          <div class="avatar">Y</div>
+          <div><strong>Your space</strong><small>Personal dashboard</small></div>
+          <span class="profile-menu">···</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open menu">☰</button>
+        <div class="breadcrumb"><span>WORKSPACE</span><b>/</b><strong id="topPageName">Overview</strong></div>
+        <div class="topbar-right">
+          <span class="today-label" id="todayLabel"></span>
+          <div class="top-avatar">Y</div>
+        </div>
+      </header>
+
+      <div class="page-wrap">
+        <section class="page active" id="page-home">
+          <div class="welcome-row">
+            <div>
+              <div class="eyebrow"><span class="live-dot"></span> YOUR PERSONAL DASHBOARD</div>
+              <h1>Make today <span>count.</span></h1>
+              <p class="subheading">A little progress is still progress. Let's get into it.</p>
+            </div>
+            <button class="button button-primary" data-go="habits">＋ Add a habit</button>
+          </div>
+
+          <div class="hero-grid">
+            <article class="card daily-card">
+              <div class="card-top"><div><span class="eyebrow">DAILY CHECK-IN</span><h2>Your day, at a glance</h2></div><span class="date-chip" id="dateChip">TODAY</span></div>
+              <div class="daily-content">
+                <div class="ring-wrap">
+                  <svg class="progress-ring" viewBox="0 0 140 140" aria-label="Daily completion">
+                    <circle class="ring-track" cx="70" cy="70" r="59"></circle>
+                    <circle class="ring-value" id="homeRing" cx="70" cy="70" r="59"></circle>
+                  </svg>
+                  <div class="ring-center"><strong id="homePercent">0%</strong><small>COMPLETE</small></div>
+                </div>
+                <div class="daily-stats">
+                  <div><span class="stat-icon green">✓</span><span><strong id="homeHabits">0 / 0</strong><small>Habits done</small></span></div>
+                  <div><span class="stat-icon purple">◷</span><span><strong id="homeFocus">0 min</strong><small>Focus time today</small></span></div>
+                  <div><span class="stat-icon green">↗</span><span><strong id="homeWorkouts">0</strong><small>Workouts logged</small></span></div>
+                </div>
+              </div>
+              <div class="card-footer"><span class="footer-dot"></span><span id="dailyMessage">Start with one small win.</span><button class="text-button" data-go="habits">View habits →</button></div>
+            </article>
+
+          </div>
+
+          <div class="section-heading"><div><span class="eyebrow">KEEP THE MOMENTUM</span><h2>Today's priorities</h2></div><button class="text-button" data-go="habits">See all habits →</button></div>
+          <div class="card habits-preview">
+            <div class="preview-head"><span>YOUR HABITS</span><span id="habitCountLabel">0 ITEMS</span></div>
+            <div id="homeHabitList" class="home-habit-list"></div>
+          </div>
+
+        </section>
+
+        <section class="page" id="page-habits">
+          <div class="page-heading"><div><span class="eyebrow">BUILD YOUR ROUTINE</span><h1>Habits<span>.</span></h1><p class="subheading">The little things add up. Keep showing up.</p></div></div>
+          <div class="stats-row">
+            <div class="card stat-card"><small>DONE TODAY</small><strong id="habitDoneStat">0</strong><span>habits completed</span></div>
+            <div class="card stat-card"><small>TOTAL HABITS</small><strong id="habitTotalStat">0</strong><span>in your routine</span></div>
+            <div class="card stat-card"><small>BEST STREAK</small><strong id="habitStreakStat">0 <em>days</em></strong><span>keep it going</span></div>
+          </div>
+          <div class="section-heading"><div><span class="eyebrow">YOUR DAILY LIST</span><h2>Today's habits</h2></div><button class="button button-primary" id="addHabitBtn">＋ New habit</button></div>
+          <div class="card habit-list-card"><div id="habitList" class="habit-list"></div></div>
+          <div class="card add-habit-panel" id="addHabitPanel" hidden>
+            <div><span class="eyebrow">MAKE IT YOURS</span><h3>Add a habit</h3></div>
+            <form id="habitForm" class="inline-form"><input id="habitName" maxlength="40" placeholder="e.g. Read for 15 minutes" required><select id="habitCategory"><option>Personal</option><option>Fitness</option><option>School</option><option>Wellness</option></select><button class="button button-primary">Add habit</button><button type="button" class="button button-quiet" id="cancelHabit">Cancel</button></form>
+          </div>
+        </section>
+
+        <section class="page" id="page-training">
+          <div class="page-heading"><div><span class="eyebrow">MOVE WITH PURPOSE</span><h1>Training<span>.</span></h1><p class="subheading">Track your sessions and give yourself credit for showing up.</p></div></div>
+          <div class="training-layout">
+            <div class="card form-card"><span class="eyebrow">LOG A SESSION</span><h2>What did you work on?</h2>
+              <form id="workoutForm" class="stack-form">
+                <label>Workout name<input id="workoutName" placeholder="e.g. Upper body" maxlength="50" required></label>
+                <label>Type<select id="workoutType"><option>Strength</option><option>Cardio</option><option>Sports</option><option>Mobility</option><option>Other</option></select></label>
+                <label>Duration (minutes)<input id="workoutDuration" type="number" min="1" max="300" placeholder="45" required></label>
+                <label>Notes <span class="optional">OPTIONAL</span><textarea id="workoutNotes" rows="3" maxlength="240" placeholder="How did it go?"></textarea></label>
+                <button class="button button-primary">Save session <span>→</span></button>
+              </form>
+            </div>
+            <div class="card history-card"><div class="section-heading compact"><div><span class="eyebrow">YOUR RECENT ACTIVITY</span><h2>Training log</h2></div><span class="count-pill" id="workoutCount">0 SESSIONS</span></div><div id="workoutList" class="activity-list"></div></div>
+          </div>
+        </section>
+
+        <section class="page" id="page-nutrition">
+          <div class="page-heading"><div><span class="eyebrow">TAKE CARE OF YOURSELF</span><h1>Nutrition<span>.</span></h1><p class="subheading">Keep simple notes about meals, energy, and hydration.</p></div></div>
+          <div class="nutrition-grid">
+            <article class="card water-card"><span class="eyebrow">HYDRATION</span><h2>Water check-in</h2><p class="muted">A simple reminder to drink throughout the day.</p><div class="water-number"><strong id="waterCount">0</strong><span>glasses today</span></div><div class="water-track"><div id="waterFill"></div></div><div class="water-actions"><button class="button button-primary" id="addWater">＋ Add a glass</button><button class="button button-quiet" id="removeWater">− Undo</button></div><small class="muted">Your daily amount is personal. Listen to your thirst and your body's needs.</small></article>
+            <article class="card meal-card"><span class="eyebrow">MEAL NOTES</span><h2>What have you eaten?</h2><p class="muted">No calorie counting here — just a place to remember meals and snacks.</p><form id="mealForm" class="stack-form"><label>Meal or snack<input id="mealName" maxlength="100" placeholder="e.g. Lunch — sandwich and fruit" required></label><label>How was your energy?<select id="mealEnergy"><option>Good</option><option>Okay</option><option>Low</option></select></label><button class="button button-primary">Save note →</button></form></article>
+          </div>
+          <div class="section-heading"><div><span class="eyebrow">YOUR NOTES</span><h2>Food journal</h2></div></div>
+          <div class="card journal-card"><div id="mealList" class="activity-list"></div></div>
+        </section>
+
+        <section class="page" id="page-focus">
+          <div class="page-heading"><div><span class="eyebrow">ONE THING AT A TIME</span><h1>Focus<span>.</span></h1><p class="subheading">Take a little space away from distractions.</p></div></div>
+          <div class="focus-layout">
+            <article class="card timer-card"><span class="eyebrow">FOCUS TIMER</span><div class="timer-ring"><svg viewBox="0 0 260 260"><circle cx="130" cy="130" r="116" class="timer-track"></circle><circle cx="130" cy="130" r="116" class="timer-progress" id="timerProgress"></circle></svg><div class="timer-face"><strong id="timerDisplay">25:00</strong><small id="timerStatus">READY WHEN YOU ARE</small></div></div><div class="timer-presets"><button class="preset active" data-minutes="25">25 min</button><button class="preset" data-minutes="15">15 min</button><button class="preset" data-minutes="5">5 min</button></div><div class="timer-controls"><button class="button button-primary" id="timerStart">Start focus</button><button class="button button-quiet" id="timerReset">Reset</button></div><p class="muted timer-note">When the timer ends, take a break. You can pause or stop whenever you need.</p></article>
+            <article class="card focus-side"><span class="eyebrow">MAKE IT COUNT</span><h2>What are you focusing on?</h2><input id="focusTask" class="focus-task-input" placeholder="e.g. Finish science homework"><div class="focus-tip"><span class="tip-icon">✳</span><div><strong>One thing is enough.</strong><p>Choose a task that feels manageable. You can always do another session later.</p></div></div><div class="focus-total"><span>FOCUS TIME TODAY</span><strong id="focusTotal">0 <small>min</small></strong></div></article>
+          </div>
+        </section>
+
+        <section class="page" id="page-coach">
+          <div class="page-heading"><div><span class="eyebrow">YOUR PERSONAL SUPPORT</span><h1>AI Coach<span>.</span></h1><p class="subheading">Think things through, make a plan, and take the next step.</p></div><span class="online-pill"><i></i> READY TO HELP</span></div>
+          <div class="coach-layout">
+            <div class="card chat-card"><div class="chat-header"><div class="coach-avatar">✳</div><div><strong>LOCK IN Coach</strong><small><span class="live-dot"></span> Here to help you make a plan</small></div><button id="clearChat" class="clear-chat">Clear chat</button></div><div class="chat-messages" id="coachMessages"><div class="chat-message assistant"><div class="message-avatar">✳</div><div class="message-bubble"><p>Hey! What's one thing you'd like to make progress on today?</p><small>LOCK IN COACH</small></div></div></div><form id="coachForm" class="chat-input-row"><input id="coachInput" maxlength="1500" placeholder="Message your coach..." autocomplete="off" required><button class="send-button" aria-label="Send message">↑</button></form><div class="chat-footnote">AI can make mistakes. Use your judgment and talk to a trusted adult for important health or safety questions.</div></div>
+          </div>
+        </section>
+
+        <section class="page" id="page-community">
+          <div class="page-heading"><div><span class="eyebrow">BETTER TOGETHER</span><h1>Community<span>.</span></h1><p class="subheading">A little friendly motivation goes a long way.</p></div></div>
+          <div class="community-banner card"><div><span class="eyebrow">YOUR CIRCLE</span><h2>Keep each other<br><span>moving forward.</span></h2><p>Sample leaderboard preview — real friend accounts are not connected yet.</p></div><div class="community-art"><span>✳</span><i></i><b></b></div></div>
+          <div class="section-heading"><div><span class="eyebrow">THIS WEEK</span><h2>Consistency board</h2></div><span class="count-pill">DEMO DATA</span></div>
+          <div class="card leaderboard"><div class="leader-row leader-head"><span>MEMBER</span><span>ACTIVE DAYS</span><span>STATUS</span></div><div class="leader-row"><span class="member"><i class="leader-avatar you">Y</i><b>You</b><em>YOU</em></span><strong id="communityDays">0 days</strong><span class="status-tag">Your progress</span></div><div class="leader-row"><span class="member"><i class="leader-avatar">A</i><b>Alex</b></span><strong>5 days</strong><span class="status-tag">On a roll</span></div><div class="leader-row"><span class="member"><i class="leader-avatar purple-avatar">J</i><b>Jordan</b></span><strong>4 days</strong><span class="status-tag">Steady</span></div><div class="leader-row"><span class="member"><i class="leader-avatar gold-avatar">S</i><b>Sam</b></span><strong>3 days</strong><span class="status-tag">Building</span></div></div>
+        </section>
+
+        <footer class="app-footer"><span>LOCK<span>IN</span></span><small>SHOW UP FOR YOURSELF.</small><small>YOUR DATA STAYS IN THIS BROWSER.</small></footer>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="script.js"></script>
+</body>
+</html>

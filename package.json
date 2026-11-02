@@ -1,0 +1,16 @@
+{
+  "name": "lock-in",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LOCK IN — a personal dashboard for habits, training, nutrition, focus, and an AI coach.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "openai": "^5.12.2"
+  }
+}
