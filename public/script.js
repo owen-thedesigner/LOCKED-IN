@@ -1,8 +1,43 @@
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 const today = () => new Date().toISOString().slice(0, 10);
-// Hosted LOCK IN Coach API. The website stays on GitHub Pages; chat runs on Render.
-const API_BASE_URL = "https://lock-in-coach-api.onrender.com";
+// Free, on-device AI. No API key or paid AI server is needed.
+const LOCAL_AI_MODEL = "Qwen2.5-0.5B-Instruct-q4f16_1-MLC";
+let localAIEngine = null;
+let localAIEnginePromise = null;
+
+const COACH_INSTRUCTIONS = [
+  "You are LOCK IN Coach, a supportive and practical coach for a teenager.",
+  "Help with habits, school productivity, balanced fitness, music practice, sleep routines, and general organization.",
+  "Be encouraging but not cheesy. Keep answers concise, clear, and actionable.",
+  "Never encourage extreme exercise, skipping meals, restrictive eating, supplements, or chasing a particular body shape.",
+  "For nutrition, focus on regular meals, variety, hydration, and energy rather than calories or weight.",
+  "For training, emphasize safe technique, rest, gradual progress, and adult or qualified-coach supervision.",
+  "Do not diagnose medical or mental health conditions. For serious health or safety concerns, encourage talking with a trusted adult and an appropriate professional.",
+  "Ask at most one question at a time when more context is needed."
+].join(" ");
+
+async function getLocalAIEngine(onProgress) {
+  if (localAIEngine) return localAIEngine;
+  if (!("gpu" in navigator)) {
+    throw new Error("This browser or device doesn't support the graphics feature LOCK IN needs for local AI. Try the latest Chrome or Edge on a compatible computer. Your habits and other LOCK IN features still work.");
+  }
+  if (!localAIEnginePromise) {
+    localAIEnginePromise = (async () => {
+      const webllm = await import("https://esm.run/@mlc-ai/web-llm");
+      return webllm.CreateMLCEngine(LOCAL_AI_MODEL, {
+        initProgressCallback: (progress) => {
+          if (typeof onProgress === "function") onProgress(progress);
+        }
+      });
+    })().catch(error => {
+      localAIEnginePromise = null;
+      throw error;
+    });
+  }
+  localAIEngine = await localAIEnginePromise;
+  return localAIEngine;
+}
 const load = (key, fallback) => {
   try { const value = localStorage.getItem(key); return value ? JSON.parse(value) : fallback; }
   catch { return fallback; }
@@ -212,33 +247,46 @@ async function sendCoachMessage(text) {
   const content = text.trim();
   if (!content) return;
   coachHistory.push({ role: "user", content });
-  save("lockin_coach_history", coachHistory); renderCoachHistory();
-  $("#coachInput").value = ""; $("#coachInput").disabled = true;
+  save("lockin_coach_history", coachHistory);
+  renderCoachHistory();
+  $("#coachInput").value = "";
+  $("#coachInput").disabled = true;
+
   const pending = document.createElement("div");
-  pending.className = "chat-message assistant"; pending.id = "coachPending";
-  pending.innerHTML = `<div class="message-avatar">✳</div><div class="message-bubble"><p>Thinking...</p></div>`;
+  pending.className = "chat-message assistant";
+  pending.id = "coachPending";
+  pending.innerHTML = `<div class="message-avatar">✳</div><div class="message-bubble"><p>Waking up the local AI…</p></div>`;
   $("#coachMessages").appendChild(pending);
   $("#coachMessages").scrollTop = $("#coachMessages").scrollHeight;
+
   try {
-    if (window.location.protocol === "file:") {
-      throw new Error("The AI coach needs the LOCK IN server. Run `npm start` in the project folder, then open http://localhost:3000.");
-    }
-    const response = await fetch(`${API_BASE_URL}/api/chat`, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: coachHistory.slice(-16) })
+    const engine = await getLocalAIEngine(progress => {
+      const status = pending.querySelector("p");
+      if (status && progress?.text) {
+        const percent = Number.isFinite(progress.progress) ? ` ${Math.round(progress.progress * 100)}%` : "";
+        status.textContent = `Preparing AI on this device: ${progress.text}${percent}`;
+      }
     });
-    if (!response.headers.get("content-type")?.includes("application/json")) {
-      throw new Error("Open LOCK IN at http://localhost:3000 so the AI coach can reach its server.");
-    }
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "The coach couldn't respond.");
-    coachHistory.push({ role: "assistant", content: data.reply });
+    const response = await engine.chat.completions.create({
+      messages: [
+        { role: "system", content: COACH_INSTRUCTIONS },
+        ...coachHistory.slice(-16)
+      ],
+      temperature: 0.7,
+      max_tokens: 300
+    });
+    const reply = response.choices?.[0]?.message?.content?.trim();
+    if (!reply) throw new Error("The local AI didn't return a reply. Please try again.");
+    coachHistory.push({ role: "assistant", content: reply });
     save("lockin_coach_history", coachHistory);
   } catch (error) {
-    coachHistory.push({ role: "assistant", content: error.message || "I couldn't connect. Please try again." });
+    console.error("LOCK IN local AI error:", error);
+    coachHistory.push({ role: "assistant", content: error?.message || "The local AI couldn't start. Please try again." });
     save("lockin_coach_history", coachHistory);
   } finally {
-    $("#coachInput").disabled = false; renderCoachHistory(); $("#coachInput").focus();
+    $("#coachInput").disabled = false;
+    renderCoachHistory();
+    $("#coachInput").focus();
   }
 }
 $("#coachForm").addEventListener("submit", e => { e.preventDefault(); sendCoachMessage($("#coachInput").value); });
