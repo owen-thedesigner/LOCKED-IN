@@ -1,6 +1,8 @@
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 const today = () => new Date().toISOString().slice(0, 10);
+// Hosted LOCK IN Coach API. The website stays on GitHub Pages; chat runs on Render.
+const API_BASE_URL = "https://lock-in-coach-api.onrender.com";
 const load = (key, fallback) => {
   try { const value = localStorage.getItem(key); return value ? JSON.parse(value) : fallback; }
   catch { return fallback; }
@@ -221,7 +223,7 @@ async function sendCoachMessage(text) {
     if (window.location.protocol === "file:") {
       throw new Error("The AI coach needs the LOCK IN server. Run `npm start` in the project folder, then open http://localhost:3000.");
     }
-    const response = await fetch("/api/chat", {
+    const response = await fetch(`${API_BASE_URL}/api/chat`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages: coachHistory.slice(-16) })
     });
